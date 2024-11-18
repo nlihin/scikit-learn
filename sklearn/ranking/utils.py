@@ -26,7 +26,8 @@ def start_jvm():
             
             # Construct the classpath
             cp = [
-                os.path.join(package_dir, "lib/*"),
+                os.path.join(package_dir, "lib/packageManager.jar"),
+                os.path.join(package_dir, "lib/java-cup.jar"),
                 os.path.join(package_dir, "weka"),
             ]
             # Join classpath using ':' for Linux/macOS or ';' for Windows
@@ -37,6 +38,8 @@ def start_jvm():
             # Start the JVM with the constructed classpath
             jpype.startJVM(*jvm_args, classpath=classpath, convertStrings=True)
             print("JVM started successfully!")
+            load_dataset_as_Instances("datasets/iris_dense.xarff")
+            print("JVM load_dataset_as_Instances successfully!")
         except Exception as e:
             print(f"Error starting JVM: {e}")
             raise
