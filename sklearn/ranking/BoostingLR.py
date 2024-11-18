@@ -6,12 +6,12 @@ from .utils import kendalls_tau
 
 # Implement the BoostLR class in Python
 class BoostingLR:
-    def __init__(self, max_iterations=50, seed=None):
+    def __init__(self, max_iterations=50, seed=None, dist_algo=None):
         self.max_iterations = max_iterations
         self.m_Seed = seed
         self.m_Classifiers = None
         self.iters = 0
-        print("seed: ", self.m_Seed)
+        self.dist_algo = dist_algo
 
     def build_classifier(self, data, lrt):
 
@@ -65,7 +65,7 @@ class BoostingLR:
                 prefs = self.preferences(instance)
                 preds = self.m_Classifiers[t].distributionForInstance(instance)
 
-                l = 1 - kendalls_tau(prefs, preds)
+                l = 1 - self.dist_algo(prefs, preds)
                 Ls[i] = l
                 sum_of_losses += l
 

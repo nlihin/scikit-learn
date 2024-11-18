@@ -3,10 +3,12 @@ from sklearn.ranking.BoostingLR import BoostingLR
 from .utils import *
 
 class BoostingLRWrapper:
-    def __init__(self, max_iterations=50, seed=None):
+    def __init__(self, max_iterations=50, seed=None, dist_algo=None, dist_score=None):
         self.max_iterations = max_iterations
         self.seed = seed
-        self.boosting_lr = BoostingLR(max_iterations=self.max_iterations, seed=self.seed)
+        self.dist_algo = dist_algo
+        self.dist_score = dist_score
+        self.boosting_lr = BoostingLR(max_iterations=self.max_iterations, seed=self.seed, dist_algo=self.dist_algo)
 
     def fit(self, train_data):
         """
@@ -47,7 +49,7 @@ class BoostingLRWrapper:
             prefs = self.boosting_lr.preferences(instance)
             preds = predicted_rankings[i]
 
-            total_kt += kendalls_tau(preds, prefs)
+            total_kt += self.dist_score(prefs, preds)
 
         # Calculate the average Kendall's Tau for this fold
         return total_kt / len(predicted_rankings)
