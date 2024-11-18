@@ -9,22 +9,18 @@ from scipy.stats import kendalltau
 from sklearn.metrics import ndcg_score
 
 def start_jvm():
-    """Start the JVM and set up the classpath with absolute paths."""
+    """Start the JVM if it's not already running."""
     if not jpype.isJVMStarted():
         try:
-            # Get the absolute path to the current directory (where utils.py is located)
-            base_path = os.path.dirname(os.path.abspath(__file__))
-
-            # Construct the classpath using absolute paths
-            weka_path = os.path.join(base_path, "weka")
-            lib_path = os.path.join(base_path, "lib", "*")
-
-            # Set the classpath for Weka and Java dependencies
-            cp = f"{weka_path}:{lib_path}"
-
-            # Start the JVM with the specified classpath
-            jpype.startJVM(classpath=[cp], convertStrings=True)
-            print(f"JVM started successfully with classpath: {cp}")
+            jvm_args = ["-Xmx1g"]
+            # Set the classpath relative to the installed package location
+            package_dir = os.path.dirname(__file__)
+            cp = [
+                os.path.join(package_dir, "lib/*"),
+                os.path.join(package_dir, "weka"),
+            ]
+            jpype.startJVM(*jvm_args, classpath=cp, convertStrings=True)
+            print("JVM started successfully.")
         except Exception as e:
             print(f"Error starting JVM: {e}")
             raise
