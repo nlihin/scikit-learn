@@ -4,6 +4,7 @@ import pandas as pd
 
 import jpype
 from jpype import JClass
+from importlib.resources import files
 
 from scipy.stats import kendalltau
 from sklearn.metrics import ndcg_score
@@ -13,23 +14,35 @@ def start_jvm():
     if not jpype.isJVMStarted():
         try:
             jvm_args = ["-Xmx1g"]
-            package_dir = os.path.dirname(__file__)
-            print("package_dir: ", package_dir)
+            
+            # Find the package directory using importlib.resources (Python 3.9+)
+            try:
+                package_dir = files("sklearn.ranking").joinpath().as_posix()
+            except Exception as e:
+                print(f"Error finding package directory: {e}")
+                package_dir = os.getcwd()  # Fallback to current working directory
+            
+            print("Package directory:", package_dir)
+            
+            # Construct the classpath
             cp = [
                 os.path.join(package_dir, "lib/*"),
                 os.path.join(package_dir, "weka"),
             ]
-            classpath = ":".join(cp)
-            print("Classpath:", classpath)  # Print the classpath before starting the JVM
-            print("Classpath[0]:", classpath[0])
-            print("Classpath[1]:", classpath[1])
+            # Join classpath using ':' for Linux/macOS or ';' for Windows
+            classpath = ":".join(cp) if os.name != "nt" else ";".join(cp)
+
+            print("Classpath:", classpath)
+
+            # Start the JVM with the constructed classpath
             jpype.startJVM(*jvm_args, classpath=classpath, convertStrings=True)
-            print("JVM started successfully!!")
+            print("JVM started successfully!")
         except Exception as e:
             print(f"Error starting JVM: {e}")
             raise
     else:
         print("JVM is already running.")
+
 
 def stop_jvm():
     jpype.shutdownJVM()
