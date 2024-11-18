@@ -20,8 +20,10 @@ def start_jvm():
             ]
             classpath = ":".join(cp)
             print("Classpath:", classpath)  # Print the classpath before starting the JVM
+            print("Classpath[0]:", classpath[0])
+            print("Classpath[1]:", classpath[1])
             jpype.startJVM(*jvm_args, classpath=classpath, convertStrings=True)
-            print("JVM started successfully.")
+            print("JVM started successfully!!")
         except Exception as e:
             print(f"Error starting JVM: {e}")
             raise
