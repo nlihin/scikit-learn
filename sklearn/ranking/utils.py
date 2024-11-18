@@ -10,7 +10,7 @@ from sklearn.metrics import ndcg_score
 def start_jvm():
     # Start the JVM and set up the classpath
     jvm_args = ["-Xmx1g"]  # Set maximum heap size for JVM
-    cp = ["./sklearn", "./sklearn/lib/*", "./sklearn/weka"]  # Set the classpath for Weka and other Java dependencies
+    cp = ["./sklearn/ranking", "./sklearn/ranking/lib/*", "./sklearn/ranking/weka"]  # Set the classpath for Weka and other Java dependencies
     jpype.startJVM(*jvm_args, classpath=cp, convertStrings=True)
 
 def stop_jvm():
@@ -77,7 +77,7 @@ def save_to_xarff(df, file_path, relation_name="dataset", attribute_info=None):
             f.write(','.join(map(str, row_data)) + '\n')
 
 def load_dataset_as_Instances(file):
-    DataSource = JClass("sklearn.ranking.weka.core.converters.ConverterUtils$DataSource")
+    DataSource = JClass("weka.core.converters.ConverterUtils$DataSource")
     data = DataSource.read(file)
     data.setClassIndex(data.numAttributes() - 1)
     return data
