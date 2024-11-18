@@ -5,6 +5,7 @@ import jpype
 from jpype import JClass
 
 from scipy.stats import kendalltau
+from sklearn.metrics import ndcg_score
 
 def start_jvm():
     # Start the JVM and set up the classpath
@@ -85,3 +86,6 @@ def kendalls_tau(prefs, preds):
     # Using scipy's built-in Kendall's Tau implementation
     tau, _ = kendalltau(prefs, preds)
     return tau
+
+def ndcg(prefs, preds):
+    return ndcg_score([prefs], [preds])
