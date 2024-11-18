@@ -77,7 +77,7 @@ def save_to_xarff(df, file_path, relation_name="dataset", attribute_info=None):
             f.write(','.join(map(str, row_data)) + '\n')
 
 def load_dataset_as_Instances(file):
-    DataSource = JClass("weka.core.converters.ConverterUtils$DataSource")
+    DataSource = JClass("sklearn.ranking.weka.core.converters.ConverterUtils$DataSource")
     data = DataSource.read(file)
     data.setClassIndex(data.numAttributes() - 1)
     return data
