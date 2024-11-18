@@ -13,13 +13,14 @@ def start_jvm():
     if not jpype.isJVMStarted():
         try:
             jvm_args = ["-Xmx1g"]
-            # Set the classpath relative to the installed package location
             package_dir = os.path.dirname(__file__)
             cp = [
                 os.path.join(package_dir, "lib/*"),
                 os.path.join(package_dir, "weka"),
             ]
-            jpype.startJVM(*jvm_args, classpath=cp, convertStrings=True)
+            classpath = ":".join(cp)
+            print("Classpath:", classpath)  # Print the classpath before starting the JVM
+            jpype.startJVM(*jvm_args, classpath=classpath, convertStrings=True)
             print("JVM started successfully.")
         except Exception as e:
             print(f"Error starting JVM: {e}")
