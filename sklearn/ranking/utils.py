@@ -14,6 +14,7 @@ def start_jvm():
         try:
             jvm_args = ["-Xmx1g"]
             package_dir = os.path.dirname(__file__)
+            print("package_dir: ", package_dir)
             cp = [
                 os.path.join(package_dir, "lib/*"),
                 os.path.join(package_dir, "weka"),
