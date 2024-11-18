@@ -3,45 +3,49 @@ import os
 import pandas as pd
 
 import jpype
-from jpype import JClass
+from jpype import JClass, startJVM, isJVMStarted
 from importlib.resources import files
 
 from scipy.stats import kendalltau
 from sklearn.metrics import ndcg_score
 
 def start_jvm():
-    """Start the JVM if it's not already running."""
-    if not jpype.isJVMStarted():
+    """Start the JVM if it's not already running and load a dataset."""
+    if not isJVMStarted():
         try:
+            # JVM arguments
             jvm_args = ["-Xmx1g"]
-            
-            # Find the package directory using importlib.resources (Python 3.9+)
+
+            # Get the package directory
             try:
                 package_dir = files("sklearn.ranking").joinpath().as_posix()
             except Exception as e:
                 print(f"Error finding package directory: {e}")
                 package_dir = os.getcwd()  # Fallback to current working directory
-            
+
             print("Package directory:", package_dir)
-            
+
             # Construct the classpath
             cp = [
                 os.path.join(package_dir, "lib/packageManager.jar"),
                 os.path.join(package_dir, "lib/java-cup.jar"),
-                os.path.join(package_dir, "weka"),
+                package_dir,  # Root directory for Weka
             ]
-            # Join classpath using ':' for Linux/macOS or ';' for Windows
             classpath = ":".join(cp) if os.name != "nt" else ";".join(cp)
-
             print("Classpath:", classpath)
 
-            # Start the JVM with the constructed classpath
-            jpype.startJVM(*jvm_args, classpath=classpath, convertStrings=True)
+            # Start the JVM
+            startJVM(*jvm_args, classpath=classpath, convertStrings=True)
             print("JVM started successfully!")
-            load_dataset_as_Instances("datasets/iris_dense.xarff")
-            print("JVM load_dataset_as_Instances successfully!")
+
+            # Load a test dataset
+            dataset_path = os.path.join(package_dir, "datasets/iris_dense.xarff")
+            print(f"Loading dataset from: {dataset_path}")
+            dataset = load_dataset_as_Instances(dataset_path)
+            print("Dataset loaded successfully!")
+            return dataset  # Return the loaded dataset if needed
         except Exception as e:
-            print(f"Error starting JVM: {e}")
+            print(f"Error starting JVM or loading dataset: {e}")
             raise
     else:
         print("JVM is already running.")
