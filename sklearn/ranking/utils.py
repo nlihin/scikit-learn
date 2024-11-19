@@ -38,12 +38,6 @@ def start_jvm():
             startJVM(*jvm_args, classpath=classpath, convertStrings=True)
             print("JVM started successfully!")
 
-            # Load a test dataset
-            dataset_path = os.path.join(package_dir, "datasets/iris_dense.xarff")
-            print(f"Loading dataset from: {dataset_path}")
-            dataset = load_dataset_as_Instances(dataset_path)
-            print("Dataset loaded successfully!")
-            return dataset  # Return the loaded dataset if needed
         except Exception as e:
             print(f"Error starting JVM or loading dataset: {e}")
             raise
