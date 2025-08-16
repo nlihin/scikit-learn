@@ -1,3 +1,6 @@
+# Note to self
+This fork includes **Oria Zadok’s ranking project**, located in `sklearn/ranking`. Nov 2024. Erel's student
+
 .. -*- mode: rst -*-
 
 |Azure| |CirrusCI| |Codecov| |CircleCI| |Nightly wheels| |Black| |PythonVersion| |PyPi| |DOI| |Benchmark|
